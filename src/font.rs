@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{collections::HashMap, fs::File, ops::Deref, path::Path};
+use std::{collections::HashMap, fs::File, ops::Deref, path::Path, io};
 use text_svg::Glpyh;
 
 use crate::Renderer;
@@ -52,17 +52,17 @@ pub struct FontMetrics {
 }
 
 impl FontMetrics {
-    pub fn load(metrics_path: impl AsRef<Path>, glyphs_path: impl AsRef<Path>) -> Self {
-        let metrics_file = File::open(metrics_path).unwrap();
-        let metrics = serde_json::from_reader(metrics_file).unwrap();
+    pub fn load(metrics_path: impl AsRef<Path>, glyphs_path: impl AsRef<Path>) -> io::Result<Self> {
+        let metrics_file = File::open(metrics_path)?;
+        let metrics = serde_json::from_reader(metrics_file)?;
 
         let glyphs_file = File::open(glyphs_path).unwrap();
-        let glyph_names = serde_json::from_reader(glyphs_file).unwrap();
+        let glyph_names = serde_json::from_reader(glyphs_file)?;
 
-        Self {
+        Ok(Self {
             metrics,
             glyph_names,
-        }
+        })
     }
 
     pub fn glyph<'a>(&'a self, name: &'a str) -> Glyph<'a> {

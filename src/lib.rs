@@ -1,5 +1,9 @@
 use rusttype::Font;
-use std::{fs::File, io::Read};
+use std::{
+    fs::File,
+    io::{self, Read},
+    path::Path,
+};
 use svg::Document;
 
 pub mod font;
@@ -11,16 +15,16 @@ pub struct Renderer {
 }
 
 impl Renderer {
-    pub fn new() -> Self {
-        let mut file = File::open("Leland.otf").unwrap();
+    pub fn from_path(path: impl AsRef<Path>) -> io::Result<Self> {
+        let mut file = File::open(path)?;
         let mut buf = Vec::new();
-        file.read_to_end(&mut buf).unwrap();
+        file.read_to_end(&mut buf)?;
 
-        let font = Font::try_from_vec(buf).unwrap();
-        Self {
+        let font = Font::try_from_vec(buf).ok_or(io::Error::from(io::ErrorKind::InvalidData))?;
+        Ok(Self {
             font,
             document: Some(Document::new()),
-        }
+        })
     }
 
     pub fn document(&self) -> &Document {

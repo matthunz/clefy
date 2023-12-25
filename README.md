@@ -1,3 +1,6 @@
+# Clefy
+
+```rust
 use clefy::{FontMetrics, Renderer};
 
 fn main() -> std::io::Result<()> {
@@ -17,3 +20,4 @@ fn main() -> std::io::Result<()> {
     svg::save("image.svg", renderer.document())?;
     Ok(())
 }
+```
