@@ -1,5 +1,7 @@
 # Clefy
 
+![Example image](https://raw.githubusercontent.com/matthunz/clefy/main/image.svg)
+
 ```rust
 use clefy::{FontMetrics, Renderer};
 
