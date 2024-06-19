@@ -13,6 +13,9 @@ data Octave
   | Octave7
   | Octave8
 
+instance Show Octave where
+  show o = show $ toInt o
+
 toInt :: Octave -> Int8
 toInt octave = case octave of
   OctaveNeg1 -> -1
