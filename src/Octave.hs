@@ -1,3 +1,8 @@
+-- |
+-- Module      : Octave
+-- Copyright   : (c) 2024 the Clefy authors
+-- License     : Apache-2.0
+
 module Octave where
 import Data.Int (Int8)
 

@@ -1,9 +1,15 @@
+-- |
+-- Module      : Midi
+-- Copyright   : (c) 2024 the Clefy authors
+-- License     : Apache-2.0
 module Midi where
 
 import Data.Int (Int8)
 import Data.Word (Word8)
 import Octave
 import Pitch
+import Text.Parsec
+import Text.Parsec.String (Parser)
 
 newtype MidiNote = MidiNote Word8
   deriving (Show)
@@ -61,3 +67,21 @@ standardTuning =
 
 fretMidi :: Word8 -> MidiNote -> MidiNote
 fretMidi fret (MidiNote m) = MidiNote (fret + m)
+
+parse :: Parser MidiNote
+parse = do
+  p <- Pitch.parse
+  i <- read <$> many1 digit
+  let o = case i of
+        -1 -> OctaveNeg1
+        0 -> OctaveZero
+        1 -> Octave1
+        2 -> Octave2
+        3 -> Octave3
+        4 -> Octave4
+        5 -> Octave5
+        6 -> Octave6
+        7 -> Octave7
+        8 -> Octave8
+        _ -> error ""
+  return (midi p o)

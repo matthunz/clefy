@@ -1,5 +1,13 @@
+-- |
+-- Module      : Pitch
+-- Copyright   : (c) 2024 the Clefy authors
+-- License     : Apache-2.0
 module Pitch where
+
+import Data.Functor (($>))
 import Data.Word (Word8)
+import Text.Parsec
+import Text.Parsec.String (Parser)
 
 data Pitch
   = C
@@ -30,3 +38,15 @@ toByte pitch = case pitch of
   A -> 9
   ASharp -> 10
   B -> 11
+
+parse :: Parser Pitch
+parse =
+  choice
+    [ char 'c' $> C,
+      char 'd' $> D,
+      char 'e' $> E,
+      char 'f' $> F,
+      char 'g' $> G,
+      char 'a' $> A,
+      char 'b' $> B
+    ]
