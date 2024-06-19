@@ -4,12 +4,14 @@
 -- License     : Apache-2.0
 module Midi where
 
+import Data.Functor (($>))
 import Data.Int (Int8)
 import Data.Word (Word8)
 import Octave
 import Pitch
 import Text.Parsec
 import Text.Parsec.String (Parser)
+import Data.Maybe (fromMaybe)
 
 newtype MidiNote = MidiNote Word8
   deriving (Show)
@@ -71,17 +73,17 @@ fretMidi fret (MidiNote m) = MidiNote (fret + m)
 parse :: Parser MidiNote
 parse = do
   p <- Pitch.parse
-  i <- read <$> many1 digit
-  let o = case i of
-        -1 -> OctaveNeg1
-        0 -> OctaveZero
-        1 -> Octave1
-        2 -> Octave2
-        3 -> Octave3
-        4 -> Octave4
-        5 -> Octave5
-        6 -> Octave6
-        7 -> Octave7
-        8 -> Octave8
-        _ -> error ""
-  return (midi p o)
+  o <- optionMaybe $ choice
+      [ string "-1" $> OctaveNeg1,
+        char '0' $> OctaveZero,
+        char '1' $> Octave1,
+        char '2' $> Octave2,
+        char '3' $> Octave3,
+        char '4' $> Octave4,
+        char '5' $> Octave5,
+        char '6' $> Octave6,
+        char '7' $> Octave7,
+        char '8' $> Octave8
+      ]
+
+  return (midi p (fromMaybe Octave4 o))
